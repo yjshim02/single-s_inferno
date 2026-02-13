@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Single's Inferno 
+  
+</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ee2b5b",
+                        "background-light": "#FFFDF9",
+                        "background-dark": "#181113",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#181113] dark:text-white transition-colors duration-500">
+<div class="relative flex h-screen w-full flex-col overflow-hidden">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between px-8 py-6 md:px-20 lg:px-40">
+<div class="flex items-center gap-3">
+<div class="text-primary size-6">
+
+</div>
+
+</header>
+<!-- Main Interaction Area -->
+<main class="flex flex-1 flex-col items-center justify-center px-4">
+<div class="relative flex flex-col items-center max-w-lg w-full text-center">
+<!-- Initial State: Instruction -->
+<div class="mb-12 transition-all duration-700" id="instruction-text">
+<h1 class="text-3xl md:text-4xl font-light tracking-tight mb-2">Something special is waiting.</h1>
+<p class="text-sm text-primary/60 font-medium tracking-widest uppercase">Hold the heart to reveal</p>
+</div>
+<!-- Central Interactive Component -->
+<div id="hold-area" class="relative group cursor-pointer select-none">
+<!-- Progress Ring Background -->
+<svg class="w-64 h-64 md:w-80 md:h-80">
+<circle class="text-primary/5" cx="50%" cy="50%" fill="transparent" r="120" stroke="currentColor" stroke-width="2"></circle>
+<!-- Dynamic Progress Stroke (Simulated for UI) -->
+<circle id="progress-ring" class="text-primary progress-ring__circle transition-all duration-300" cx="50%" cy="50%" fill="transparent" r="120" stroke="currentColor" stroke-dasharray="754" stroke-dashoffset="754" stroke-linecap="round" stroke-width="2"></circle>
+</svg>
+<!-- Central Button -->
+<div class="absolute inset-0 flex items-center justify-center">
+<button id="hold-btn" class="w-48 h-48 md:w-56 md:h-56 bg-white dark:bg-zinc-900 rounded-full shadow-2xl shadow-primary/10 flex flex-col items-center justify-center gap-2 transform transition-transform group-active:scale-95 group-hover:scale-105">
+<span class="material-symbols-outlined text-primary text-5xl fill-1">favorite</span>
+<span class="text-xs font-bold tracking-[0.2em] uppercase text-zinc-400">Hold</span>
+</button>
+</div>
+<!-- Floating Decorative Hearts (Background) -->
+<div class="absolute -top-10 -left-10 opacity-20 text-primary animate-bounce">
+<span class="material-symbols-outlined text-4xl">favorite</span>
+</div>
+<div class="absolute -bottom-8 -right-12 opacity-10 text-primary">
+<span class="material-symbols-outlined text-6xl">favorite</span>
+</div>
+</div>
+<!-- "Him or Her" Game Section (hidden initially) -->
+<div class="opacity-0 transform translate-y-4 pointer-events-none" id="game-section" style="transition: opacity 1s ease, transform 1s ease;">
+<p class="text-xs text-primary/60 font-medium tracking-widest uppercase mb-3">Who is more likely to…</p>
+<h2 class="text-2xl md:text-3xl font-light tracking-tight mb-2" id="game-question"></h2>
+<p class="text-xs text-primary/40 font-medium mb-8 h-5" id="game-hint"></p>
+<div class="flex flex-wrap gap-4 justify-center mb-8">
+<button id="btn-him" class="min-w-[120px] px-8 py-4 bg-primary text-white rounded-full font-bold text-sm tracking-widest uppercase shadow-xl shadow-primary/30 hover:scale-105 transition-transform">Him</button>
+<button id="btn-her" class="min-w-[120px] px-8 py-4 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full font-bold text-sm tracking-widest uppercase hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors">Her</button>
+</div>
+<!-- Progress dots -->
+<div class="flex gap-2 justify-center" id="game-dots"></div>
+</div>
+<!-- Valentine Proposal (hidden initially) -->
+<div class="opacity-0 transform translate-y-4 pointer-events-none" id="proposal-content" style="transition: opacity 1s ease, transform 1s ease;">
+<h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-8">Will you be my Valentine?</h2>
+<div class="flex flex-wrap gap-4 justify-center" id="proposal-buttons">
+<button id="btn-yes" class="min-w-[140px] px-8 py-4 bg-primary text-white rounded-full font-bold text-sm tracking-widest uppercase shadow-xl shadow-primary/30 hover:scale-105 transition-transform">
+                            Yes
+                        </button>
+<button id="btn-always" class="min-w-[140px] px-8 py-4 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full font-bold text-sm tracking-widest uppercase hover:bg-zinc-50 transition-colors">
+                            No
+                        </button>
+</div>
+<p id="proposal-hint" class="text-xs text-primary/60 font-medium mt-6 h-5"></p>
+</div>
+<!-- Final Confirmation (hidden initially) -->
+<div class="opacity-0 transform translate-y-4 pointer-events-none" id="final-state" style="transition: opacity 1s ease, transform 1s ease;">
+<h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-4" id="final-heading"></h2>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="p-8 text-center">
+<p class="text-[10px] text-zinc-400 font-bold tracking-[0.3em] uppercase">hello sai</p>
+</footer>
+<!-- Abstract Background Elements -->
+<div class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none overflow-hidden">
+<div class="absolute top-[10%] left-[5%] w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+<div class="absolute bottom-[15%] right-[5%] w-[30rem] h-[30rem] bg-primary/5 rounded-full blur-3xl"></div>
+</div>
+</div>
+<!-- UI Interaction Simulation (Explanation: Since JS isn't allowed, I've designed the visual cues to imply the hold mechanic works via active states in CSS where possible, but the primary visual is the "Static Reveal" style for a landing page preview) -->
+<!-- Decorative images for context if needed -->
+<div class="hidden">
+<img data-alt="Abstract soft pink and white rose petals" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcqOp_FtTbVz9ryeNS8Fh-l3w6RTKoua69iImKw6m4tAzTST6x-Edh_n0PSIWY_UQkeio-xRQ38dOzEv_5MdXTNFYtSovxtGzg6BwM_E1Y--nKtUWIuZlOi972b92jdMdiCRmsXic4ImN8YU77fumNnUl5xgK1yu71EveBhdEApVYdCQle-olNs2uLP1Z0FeAl21PKu4WaV2VgYVUaCVHNNuYXvdI8O8dYXCP4ttosQdYYnICKzFhd0d3iDPjbbqr8iLWFhPXkaHo"/>
+</div>
+<script>
+(function () {
+
+  /* =============================================
+     CONFIGURATION
+     ============================================= */
+  var HOLD_DURATION = 2800;
+  var CIRCUMFERENCE = 754;
+
+  /* Five "Who is more likely to…" prompts */
+  var QUESTIONS = [
+    'be more popular in boston?',
+    'like pretty girls?',
+    'be more popular with mechanical engineering students?',
+    'burn the house down while cooking?',
+    'ask the other out for Valentine\'s Day?'
+  ];
+
+  /* =============================================
+     DOM REFERENCES
+     ============================================= */
+  var holdBtn      = document.getElementById('hold-btn');
+  var ring         = document.getElementById('progress-ring');
+  var holdArea     = document.getElementById('hold-area');
+  var instruction  = document.getElementById('instruction-text');
+
+  var gameSection  = document.getElementById('game-section');
+  var gameQuestion = document.getElementById('game-question');
+  var gameHint     = document.getElementById('game-hint');
+  var gameDots     = document.getElementById('game-dots');
+  var btnHim       = document.getElementById('btn-him');
+  var btnHer       = document.getElementById('btn-her');
+
+  var proposal     = document.getElementById('proposal-content');
+  var propButtons  = document.getElementById('proposal-buttons');
+  var btnYes       = document.getElementById('btn-yes');
+  var btnAlways    = document.getElementById('btn-always');
+  var proposalHint = document.getElementById('proposal-hint');
+
+  var finalState   = document.getElementById('final-state');
+  var finalHeading = document.getElementById('final-heading');
+
+  /* =============================================
+     STATE
+     ============================================= */
+  var startTime    = null;
+  var raf          = null;
+  var holdDone     = false;
+  var currentQ     = 0;
+
+  /* =============================================
+     UTILITY: show / hide a section with fade
+     ============================================= */
+  function showSection(el) {
+    el.style.opacity       = '1';
+    el.style.transform     = 'translateY(0)';
+    el.style.pointerEvents = 'auto';
+  }
+
+  function hideSection(el, cb) {
+    el.style.opacity       = '0';
+    el.style.transform     = 'translateY(4px)';
+    el.style.pointerEvents = 'none';
+    if (cb) setTimeout(cb, 700);
+  }
+
+  /* =============================================
+     PHASE 1 — HOLD INTERACTION
+     ============================================= */
+  ring.style.transition = 'none';
+
+  function tick() {
+    if (holdDone) return;
+    var elapsed  = Date.now() - startTime;
+    var progress = Math.min(elapsed / HOLD_DURATION, 1);
+    ring.style.strokeDashoffset = CIRCUMFERENCE * (1 - progress);
+
+    if (progress >= 1) { holdComplete(); return; }
+    raf = requestAnimationFrame(tick);
+  }
+
+  function startHold(e) {
+    if (holdDone) return;
+    e.preventDefault();
+    startTime = Date.now();
+    raf = requestAnimationFrame(tick);
+  }
+
+  function endHold() {
+    if (holdDone) return;
+    cancelAnimationFrame(raf);
+    startTime = null;
+    ring.style.strokeDashoffset = CIRCUMFERENCE;
+  }
+
+  function holdComplete() {
+    holdDone = true;
+
+    /* Fade out instruction + hold area */
+    instruction.style.transition = 'opacity 0.7s ease';
+    holdArea.style.transition    = 'opacity 0.7s ease';
+    instruction.style.opacity    = '0';
+    holdArea.style.opacity       = '0';
+
+    setTimeout(function () {
+      instruction.style.display = 'none';
+      holdArea.style.display    = 'none';
+      startGame();
+    }, 700);
+  }
+
+  /* Mouse */
+  holdBtn.addEventListener('mousedown', startHold);
+  window.addEventListener('mouseup', endHold);
+  /* Touch */
+  holdBtn.addEventListener('touchstart', startHold, { passive: false });
+  window.addEventListener('touchend', endHold);
+  window.addEventListener('touchcancel', endHold);
+
+  /* =============================================
+     PHASE 2 — "HIM OR HER" GAME
+     ============================================= */
+  function buildDots() {
+    gameDots.innerHTML = '';
+    for (var i = 0; i < QUESTIONS.length; i++) {
+      var dot = document.createElement('span');
+      dot.style.cssText = 'display:inline-block;width:6px;height:6px;border-radius:50%;transition:background 0.3s ease;';
+      dot.style.background = i < currentQ ? '#ee2b5b' : (i === currentQ ? '#ee2b5b50' : '#e0ddd9');
+      gameDots.appendChild(dot);
+    }
+  }
+
+  function renderQuestion() {
+    /* Fade out, swap text, fade back in */
+    gameQuestion.style.transition = 'opacity 0.4s ease';
+    gameQuestion.style.opacity    = '0';
+    gameHint.style.opacity        = '0';
+
+    setTimeout(function () {
+      gameQuestion.textContent = QUESTIONS[currentQ];
+      gameHint.textContent     = '';
+      buildDots();
+      gameQuestion.style.opacity = '1';
+    }, 400);
+  }
+
+  function startGame() {
+    currentQ = 0;
+    renderQuestion();
+    showSection(gameSection);
+  }
+
+  function handleAnswer(choice) {
+    var isLastQuestion = (currentQ === QUESTIONS.length - 1);
+
+    /* Gate on the final question: only "Him" advances */
+    if (isLastQuestion && choice === 'her') {
+      gameHint.style.transition = 'opacity 0.3s ease';
+      gameHint.textContent      = 'Are you sure about that?';
+      gameHint.style.opacity    = '1';
+      return;
+    }
+
+    currentQ++;
+
+    if (currentQ >= QUESTIONS.length) {
+      /* Game complete — transition to Valentine proposal */
+      hideSection(gameSection, function () {
+        gameSection.style.display = 'none';
+        showSection(proposal);
+      });
+    } else {
+      renderQuestion();
+    }
+  }
+
+  btnHim.addEventListener('click', function () { handleAnswer('him'); });
+  btnHer.addEventListener('click', function () { handleAnswer('her'); });
+
+  /* =============================================
+     PHASE 3 — VALENTINE PROPOSAL
+     ============================================= */
+  function handleProposalAnswer(answer) {
+    /* Fade out the entire proposal section at once (no layout shift) */
+    hideSection(proposal, function () {
+      proposal.style.display = 'none';
+
+      finalHeading.textContent = answer === 'always'
+        ? 'I knew it.'
+        : 'Obviously it\'s a yes';
+
+      showSection(finalState);
+    });
+  }
+
+  btnYes.addEventListener('click', function () { handleProposalAnswer('yes'); });
+    btnAlways.addEventListener('click', function () {
+    proposalHint.textContent = 'Are you sure about that?';
+    proposalHint.style.transition = 'opacity 0.3s ease';
+    proposalHint.style.opacity = '1';
+  });
+
+
+})();
+</script>
+</body></html>
